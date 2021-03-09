@@ -1,0 +1,71 @@
+---
+title: "EDA"
+author: "Ankit Sanghi, Sarah Hussain"
+date: "3/9/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+all_data <- read_csv("./data.csv")
+data_by_artist <- read_csv("./data_by_artist.csv")
+data_by_year <- read_csv("./data_by_year.csv")
+data_by_genres <- read_csv("./data_by_genres.csv")
+data_w_genres <- read_csv("./data_w_genres.csv")
+```
+
+## R Markdown
+
+## Looking at mean popularity by year
+```{r}
+all_data %>%
+  group_by(year) %>%
+  summarize(avg_pop = mean(popularity)) %>%
+  ggplot(aes(x = year, y = avg_pop)) + geom_line()
+
+# even though we saw a drop in the average popularity of songs after 2000, the number of songs
+# released still increased so the drop in average popularity was due to some other reason
+all_data %>%
+  group_by(year) %>%
+  filter(year > 2000) %>%
+  summarize(avg_pop = mean(popularity), n = n()) %>%
+  ggplot(aes(x = year, y = n)) + geom_line()
+```
+
+```{r}
+#This graph shows that over time acousticness decreases whereas danceability and energy increase. 
+data_by_year %>%
+  select(year,
+         acousticness, danceability, energy) %>%
+  pivot_longer(cols = 2:4, names_to = "metric", values_to = "values") %>%
+  ggplot(aes(x = year, y = values, color = metric)) + geom_line()
+
+```
+
+
+
+```{r}
+data_by_year %>%
+  select(year,instrumentalness, liveness, speechiness, valence) %>%
+  pivot_longer(cols = 2:4, names_to = "metric", values_to = "values") %>%
+  ggplot(aes(x = year, y = values, color = metric)) + geom_line()
+  
+```
+
+```{r}
+pattern <- "(pop)|(rock)|(jazz)|(house)|(electronic)|(alternative)|(punk)|(metal)|(hip hop)|(classical)|(r&b)|(rap)|(edm)|(country)|(indie)|(folk)|(reggae)|(dance)"
+
+genre_factor <- data_by_genres %>%
+  mutate(super_genre = str_extract(genres, pattern))
+
+genre_factor$super_genre <- as.factor(genre_factor$super_genre)
+
+genre_factor %>%
+  filter(is.na(super_genre))
+
+summary(genre_factor$super_genre)
+  
+```
+
