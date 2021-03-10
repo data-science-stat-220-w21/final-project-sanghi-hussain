@@ -55,17 +55,14 @@ data_by_year %>%
 ```
 
 ```{r}
-pattern <- "(pop)|(rock)|(jazz)|(house)|(electronic)|(alternative)|(punk)|(metal)|(hip hop)|(classical)|(r&b)|(rap)|(edm)|(country)|(indie)|(folk)|(reggae)|(dance)"
+pattern <- "(pop)|(rock)|(jazz)|(house)|(electronic)|(alternative)|(punk)|(metal)|(hip hop)|(classical)|(r&b)|(rap)|(edm)|(country)|(indie)|(folk)|(reggae)|(dance)|(ambient)"
 
 genre_factor <- data_by_genres %>%
+  filter(popularity > 30) %>%
   mutate(super_genre = str_extract(genres, pattern))
 
 genre_factor$super_genre <- as.factor(genre_factor$super_genre)
-
-genre_factor %>%
-  filter(is.na(super_genre))
-
-summary(genre_factor$super_genre)
+summary(genre_factor)
   
 ```
 
