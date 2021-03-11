@@ -78,12 +78,6 @@ This information can also be found on the Kaggle page for the data. Overall, the
 
 First, let us look at the different song profiles over time. Below is a graph where you can toggle various metrics and compare them. We will be going over the notable cases in these metrics. 
 
-First, we will compare acousticness and energy. We see that over time, the acousticness of music decreases and energy increases. We see energy overtake acousticness in the 1960s, which makes sense as this was when instruments like the electric guitar started becoming more popular. More rock and pop artists became popular during this period such as The Beatles, The Rolling Stones, The Beach Boys, Janis Joplin, and many others. These genres of music tend to use more synthesized sounds which explains the drop in acousticness and rise in energy.
-
-Next, let us look at the change in danceability and valence over time. Valence is how positive or negative a song sounds. A low valence means the song sounds more negative and a high valence means it sounds more positive. If we look at the trend of valence and danceability, they are almost identical until the 2010s, where they start to diverge. It makes sense for them to be near identical as often music that is considered danceable is also positive sounding. It is pretty rare if music is negative and also danceable. So why do these two metrics diverge in the 2010s? If we also look at the energy metric, we see that also increase along with danceability. So this means that music is getting more energetic and danceable, but more negative sounding. This can be explained by the rise of rap music. Rap music often has a low beat that usually isn't categorized as sounding positive. The music used is often not cheerful or upbeat. Rather, it is heavy and serves as simply a background to the vocals. The rhythmic nature of rap makes it danceable and energetic, whereas the low sounds of the music gives it a low valence. Rap started picking up in the 2010s, where it beat rock and pop as the most popular genre of music. Thus, this could explain this divide between valence and danceability in the 2010s.
-
-Finally, let us look at instrumentalness and speechiness. Instrumentalness measures how instrumental a song is, and speechiness measures how much of a song comprises of lyrics. We can see that until 1950, when one increases the other decreases. After this point though instrumentalness takes the lead and remains on top. 
-
 ```{r, echo=FALSE}
 sidebarLayout(
     sidebarPanel(
@@ -106,6 +100,40 @@ sidebarLayout(
     )
   )
 ```
+
+First, we will compare acousticness and energy. We see that over time, the acousticness of music decreases and energy increases. We see energy overtake acousticness in the 1960s, which makes sense as this was when instruments like the electric guitar started becoming more popular. More rock and pop artists became popular during this period such as The Beatles, The Rolling Stones, The Beach Boys, Janis Joplin, and many others. These genres of music tend to use more synthesized sounds which explains the drop in acousticness and rise in energy.
+
+```{r, echo=FALSE, fig.align="center"}
+pivoted_data_by_year %>%
+        filter(metric %in% c("acousticness", "energy")) %>%
+        ggplot(aes(x = year, y = values, color = metric)) + geom_line()
+```
+
+Next, let us look at the change in danceability and valence over time. Valence is how positive or negative a song sounds. A low valence means the song sounds more negative and a high valence means it sounds more positive. If we look at the trend of valence and danceability, they are almost identical until the 2010s, where they start to diverge. It makes sense for them to be near identical as often music that is considered danceable is also positive sounding. It is pretty rare if music is negative and also danceable. So why do these two metrics diverge in the 2010s? If we also look at the energy metric, we see that also increase along with danceability. So this means that music is getting more energetic and danceable, but more negative sounding. This can be explained by the rise of rap music. Rap music often has a low beat that usually isn't categorized as sounding positive. The music used is often not cheerful or upbeat. Rather, it is heavy and serves as simply a background to the vocals. The rhythmic nature of rap makes it danceable and energetic, whereas the low sounds of the music gives it a low valence. Rap started picking up in the 2010s, where it beat rock and pop as the most popular genre of music. Thus, this could explain this divide between valence and danceability in the 2010s.
+
+```{r, echo=FALSE, fig.align="center"}
+pivoted_data_by_year %>%
+        filter(metric %in% c("danceability", "valence")) %>%
+        ggplot(aes(x = year, y = values, color = metric)) + geom_line()
+```
+
+Finally, let us look at instrumentalness and speechiness. Instrumentalness measures how instrumental a song is, and speechiness measures how much of a song comprises of lyrics. We can see that until 1950, when one increases the other decreases. After this point though instrumentalness takes the lead and remains on top. 
+
+```{r, echo=FALSE, fig.align="center"}
+pivoted_data_by_year %>%
+        filter(metric %in% c("instrumentalness", "speechiness")) %>%
+        ggplot(aes(x = year, y = values, color = metric)) + geom_line()
+```
+
+### Music Popularity Over Time
+
+Our dataset also allows us to see the popularity of music from different periods of time. Each song has a popularity metric, so we can plot the popularity of songs over time to draw inferences from the trends we see. We can see in the graph below that songs before 1950 were not popular at all, having popularity values of close to zero. Then the popularity starts to rise in the 1950s and continues to rise right up until 2000. Then it begins to sharply decline. This means that music made before 2000 is a lot more popular than the music after. This can be explained by the fact that it became much easier to upload music online and gain an audience. It also became easier to stream all kinds of music. Before the 2000s, there were only a few small groups that could make and publish music because of the large barrier to entry made by record labels and publishing companies. But after 2000, this barrier crumbled away and now anyone can upload their music online. This meant that instead of listeners focusing on a small group of bands, they now have a plethora of different genres and artists to choose from. This means that the popularity of any given song after 2000  is less, as there is a smaller concentration of listeners listening to a given song. Songs from before 2000 are also considered to be iconic because of the small number of bands. The Beatles, Queen, Nirvana, these are all iconic bands from that era. But post 2000 because of the rise in smaller artists being able to publish music, people's attention was split and so popularity became distributed instead of being concentrated in a small number of bands. This is why popularity falls after 2000. It's not that music after 2000 is not popular. Rather, the popualarity is distributed across all the songs due to music being easier to access and produce.
+
+```{r, echo=FALSE, fig.align="center"}
+data_by_year %>%
+  ggplot(aes(x = year, y = popularity)) + geom_line()
+```
+
 
 ## Embedded Application
 
