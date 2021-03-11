@@ -1,0 +1,80 @@
+---
+title: "Decision Tree/ Random Forest"
+author: "Sarah Hussain"
+date: "3/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+library(randomForest)
+library(rpart)
+library(caret)
+library(partykit)
+all_data <- read_csv("./data.csv")
+data_by_artist <- read_csv("./data_by_artist.csv")
+data_by_year <- read_csv("./data_by_year.csv")
+data_by_genres <- read_csv("./data_by_genres.csv")
+data_w_genres <- read_csv("./data_w_genres.csv")
+```
+
+```{r}
+#creating test and train data sets 
+set.seed(71903948)
+n <- nrow(all_data_w_decades)
+train_index <- sample(nrow(all_data_w_decades), size=round(.8*n)) #80% training
+
+spotify_train <- all_data_w_decades %>%
+  slice(train_index)
+
+spotify_test <- all_data_w_decades %>%
+  slice(-train_index)
+```
+
+```{r}
+#fitting random forest using decade as the predictor
+set.seed(224222)
+spotify_rforest <- randomForest(
+  decade ~ acousticness + danceability + energy + 
+    instrumentalness +  liveness + speechiness + valence, 
+  data = spotify_train, 
+  ntree = 30, 
+  mtry = 3)
+
+#making predictions
+as_tibble(predict(spotify_rforest, type="prob", newdata = spotify_test)) %>% 
+  bind_cols(spotify_test) %>%
+  mutate(prediction = predict(spotify_rforest, newdata=spotify_test)) %>%
+  select(decade, prediction)
+```
+
+```{r}
+#fitting random forest using popularity as the predictor
+set.seed(224202)
+spotify_rforest_popularity <- randomForest(
+  popularity ~ acousticness + danceability + energy + 
+    instrumentalness +  liveness + speechiness + valence, 
+  data = spotify_train, 
+  ntree = 30, 
+  mtry = 3)
+
+#making predictions
+as_tibble(predict(spotify_rforest_popularity, type="prob", newdata = spotify_test)) %>% 
+  bind_cols(spotify_test) %>%
+  mutate(prediction = predict(spotify_rforest_popularity, newdata=spotify_test)) %>%
+  select(popularity, prediction)
+```
+
+```{r}
+#simple decision tree
+spotify_rpart <- rpart(
+  decade ~ acousticness + danceability + energy + 
+    instrumentalness +  liveness + speechiness + valence, 
+  data = spotify_train
+  
+)
+plot(as.party(spotify_rpart), type = "simple")
+```
+
