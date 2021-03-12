@@ -48,6 +48,7 @@ as_tibble(predict(spotify_rforest, type="prob", newdata = spotify_test)) %>%
   mutate(prediction = predict(spotify_rforest, newdata=spotify_test)) %>%
   select(decade, prediction) %>%
   summarise(accuracy = mean(decade == prediction))
+
 write_rds(spotify_rforest, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_decade.rds")
 ```
 
@@ -63,9 +64,6 @@ spotify_rforest_popularity <- randomForest(
 as_tibble(predict(spotify_rforest_popularity, type="prob", newdata = spotify_test)) %>% 
   bind_cols(spotify_test) %>%
   mutate(prediction = predict(spotify_rforest_popularity, newdata=spotify_test)) %>%
-  select(popularity, prediction)  %>%
-  summarise(accuracy = mean(popularity == prediction))
-write_rds(spotify_rforest_popularity, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_popularity.rds")
 ```
 
 
