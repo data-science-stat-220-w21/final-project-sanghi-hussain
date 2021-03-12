@@ -13,6 +13,7 @@ library(randomForest)
 library(rpart)
 library(caret)
 library(partykit)
+library(readr)
 all_data <- read_csv("./data.csv")
 data_by_artist <- read_csv("./data_by_artist.csv")
 data_by_year <- read_csv("./data_by_year.csv")
@@ -38,16 +39,16 @@ spotify_test <- all_data_w_decades %>%
 set.seed(224222)
 spotify_rforest <- randomForest(
   decade ~ acousticness + danceability + energy + 
-    instrumentalness +  liveness + speechiness + valence, 
-  data = spotify_train, 
-  ntree = 30, 
-  mtry = 3)
+    instrumentalness  + speechiness + valence, 
+  data = spotify_train)
 
 #making predictions
 as_tibble(predict(spotify_rforest, type="prob", newdata = spotify_test)) %>% 
   bind_cols(spotify_test) %>%
   mutate(prediction = predict(spotify_rforest, newdata=spotify_test)) %>%
-  select(decade, prediction)
+  select(decade, prediction) %>%
+  summarise(accuracy = mean(decade == prediction))
+write_rds(spotify_rforest, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_decade.rds")
 ```
 
 ```{r}
@@ -55,26 +56,17 @@ as_tibble(predict(spotify_rforest, type="prob", newdata = spotify_test)) %>%
 set.seed(224202)
 spotify_rforest_popularity <- randomForest(
   popularity ~ acousticness + danceability + energy + 
-    instrumentalness +  liveness + speechiness + valence, 
-  data = spotify_train, 
-  ntree = 30, 
-  mtry = 3)
+    instrumentalness + speechiness + valence, 
+  data = spotify_train)
 
 #making predictions
 as_tibble(predict(spotify_rforest_popularity, type="prob", newdata = spotify_test)) %>% 
   bind_cols(spotify_test) %>%
   mutate(prediction = predict(spotify_rforest_popularity, newdata=spotify_test)) %>%
-  select(popularity, prediction)
+  select(popularity, prediction)  %>%
+  summarise(accuracy = mean(popularity == prediction))
+write_rds(spotify_rforest_popularity, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_popularity.rds")
 ```
 
-```{r}
-#simple decision tree
-spotify_rpart <- rpart(
-  decade ~ acousticness + danceability + energy + 
-    instrumentalness +  liveness + speechiness + valence, 
-  data = spotify_train
-  
-)
-plot(as.party(spotify_rpart), type = "simple")
-```
+
 
