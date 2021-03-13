@@ -33,20 +33,6 @@ pivoted_data_by_year <- data_by_year %>%
 spotify_rforest_decade <- read_rds("./spotify_rforest_decade.rds")
 
 spotify_rforest_popularity <- read_rds("./spotify_rforest_popularity.rds")
-
-tags$head(
-    # Note the wrapping of the string in HTML()
-    tags$style(HTML("
-      
-      body {
-        background-color: black;
-        color: white;
-      }
-      .shiny-input-container {
-        color: #474747;
-      }"))
-  )
-
 ```
 
 
@@ -61,6 +47,8 @@ We wanted to answer four main questions. First, we wanted to see how song profil
 ## The Data
 
 Our data was found on [Kaggle](https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks). It was scraped by Yamac Eren Ay and contains 174389 songs with 19 variables. Each row is a song on Spotify identified by a unique track ID. We also used acousticness, danceability, energy,  instrumentalness, valence, and speechiness which all have a numeric range from 0 to 1. Additionally, we were also interested in the year in which the song was released as well as the popularity of the song which is measure on a scale of  0 to 100. This information can also be found on the Kaggle page for the data. Overall, the dataset is very robust and fully featured and can provide some very valuable insights into how music has evolved over the years.
+
+## Analysis
 
 ### Song Profiles over Time
 We use graphical analysis to observe how the descriptive metrics for each song over time. Below is a graph where you can toggle various metrics and compare them. 
@@ -174,13 +162,25 @@ shinyApp(
   ),
   server <- function(input, output) {
      observeEvent(input$go, {
-      input_data <- data.frame(acousticness = input$acousticness, danceability = input$danceability,
-                                     energy = input$energy, instrumentalness = input$instrumentalness, 
-                                     speechiness = input$speechiness, valence = input$valence)
-            input_data <- input_data %>%
-              mutate(prediction_decade = predict(spotify_rforest_decade, newdata=input_data, type = "response"),
-                     prediction_popularity = predict(spotify_rforest_popularity, newdata=input_data, type = "response"))
-            output$result <- renderUI(HTML(paste("<h3>Your musical tastes belong in the ",input_data[1, 7] ,"s and would have a popularity between ", input_data[1, 8],"!</h3>", sep = "")))
+      input_data <- data.frame(acousticness = input$acousticness, 
+                               danceability = input$danceability,
+                               energy = input$energy, 
+                               instrumentalness = input$instrumentalness, 
+                               speechiness = input$speechiness, 
+                               valence = input$valence)
+      
+      input_data <- input_data %>%
+        mutate(prediction_decade = predict(spotify_rforest_decade, 
+                                           newdata=input_data, 
+                                           type = "response"),
+               prediction_popularity = predict(spotify_rforest_popularity, 
+                                               newdata=input_data, 
+                                               type = "response"))
+      
+      output$result <- renderUI(HTML(
+        paste("<h3>Your musical tastes belong in the ",
+              input_data[1, 7] ,"s and would have a popularity between ", 
+              input_data[1, 8],"!</h3>", sep = "")))
     })
   },
   options = list(height = 900)
