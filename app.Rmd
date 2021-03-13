@@ -3,6 +3,9 @@ title: "Today's Top Hits"
 author: "Ankit Sanghi, Sarah Hussain"
 output: html_document
 runtime: shiny
+resource_files:
+- spotify_rforest_decade.rds
+- spotify_rforest_popularity.rds
 ---
 
 ```{r setup, include=FALSE}
@@ -27,9 +30,9 @@ pivoted_data_by_year <- data_by_year %>%
                                  "speechiness"),
                      names_to = "metric", 
                      values_to = "values")
-spotify_rforest_decade <- read_rds("/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_decade.rds")
+spotify_rforest_decade <- read_rds("./spotify_rforest_decade.rds")
 
-spotify_rforest_popularity <- read_rds("/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_popularity.rds")
+spotify_rforest_popularity <- read_rds("./spotify_rforest_popularity.rds")
 
 tags$head(
     # Note the wrapping of the string in HTML()
@@ -121,9 +124,9 @@ data_by_year %>%
 
 ## Which Musical Decade do you Really Belong In?
 
-Predictions are made using a Random Forest Classification with 500 trees and the default mtry value (square-root of the number of predictors). Specifically, we use two prediction models. In the first one, the musical decade is the the main predictor and in the second one popularity of the song is the main predictor. The musical decades range from the 1920’s to the 2020’s and the popularity variable was grouped into 10 bins (0-10, 11-20, 21-30, 31-40, 41-50, 51-60, 61-70, 71-80, 81-90, 91-100). This was done primarily to reduces the number of classes. For both models we use the same set of predictors: acousticness, danceability, energy, instrumentalness, valence, and speechiness. 
+Predictions are made using a Random Forest Classification with 500 trees and the default mtry value (square-root of the number of predictors). Specifically, we use two prediction models. In the first one, the musical decade is the the main predictor and in the second one popularity of the song is the main predictor. The musical decades range from the 1920s to the 2020s and the popularity variable was grouped into 10 bins (0-10, 11-20, 21-30, 31-40, 41-50, 51-60, 61-70, 71-80, 81-90, 91-100). This was done primarily to reduces the number of classes. For both models we use the same set of predictors: acousticness, danceability, energy, instrumentalness, valence, and speechiness. 
  
-The interactive feature bellow allows you to enter the metrics for music that you like to listen to. Our model will tell you which decade your musical tastes belong in as well as how popular a song with these metrics would be. The prediction will take a few seconds, so please be patient.
+The interactive feature below allows you to enter the metrics for music that you like to listen to. Our model will tell you which decade your musical tastes belong in as well as how popular a song with these metrics would be. The prediction will take a few seconds, so please be patient.
  
 It is important to note that the accuracy of the models was 38% and 41% respectively. These are relatively low and may be attributed to the fact that there is a lot of heterogeneity in the type of music that is being listened to and so there is always more than one genre or song type that is popular. Music follows you through time and people tend to actively enjoy songs in the present that were also popular in the past. Thus, our random forest classification may not accurately represent which musical decade you really belong to. 
 
@@ -182,10 +185,6 @@ shinyApp(
   },
   options = list(height = 900)
 )
-
-
-
-
 ```
 
 
