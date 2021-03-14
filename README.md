@@ -1,8 +1,10 @@
 # Today's Top Hits
 
-## Website Link
+## Relevant Links
 
 Our website can be found [here]()
+
+Our model can be found [here](https://drive.google.com/file/d/15LqoTFY8-BxwHz1AdkxIGrPngjPelfYa/view?usp=sharing)
 
 ## Roadmap
 
