@@ -39,4 +39,4 @@ Our analysis can be found in the following files:
 
 - Random Forest Classification was used with 500 trees and the default mtry value which is the square root of the number of predictors (in this case it is the square-root of 6). Specifically, we use two prediction models - one with musical decade as the the main predictor and one with popularity. 
 
-- In order to build the website and the interactive feature we used tools learned from Shiny. We used the slider bar as well as the check box features. Additionally, we used the HTML text features to display the results from the prediction model. 
+- In order to build the website and the interactive feature we used tools learned from Shiny. We used the slider bar and check box features. Additionally, we used the HTML text features to display the results from the prediction model. 
