@@ -29,11 +29,11 @@ Our analysis can be found in the following files:
 
 - We used the tidydata methods to transform data_by_year into a longer format so that there is a column for the metric and the associated value. This helped us plot the metrics over time and differentiate between the different types (can be seen in app.Rmd)
 
-- Since we had so many years in the data set we decided to categorize them into decades. We created a  function and applied that to all the years in the data set. (Data_wrangling.Rmd)
+- Since we had so many years in the data set we decided to categorize them into decades. We created a  function and applied that to all the years in the data set (Data_wrangling.Rmd).
 
-- In order to collapse the popularity variable into smaller bins we used the `forcats` packages, specifically exploiting the `fct_collapse()` function. (Data_wrangling.Rmd)
+- In order to collapse the popularity variable into smaller bins we used the `forcats` packages, specifically exploiting the `fct_collapse()` function (Data_wrangling.Rmd).
 
--  To make our predictions we used the random forest classification studied in Statistical Learning. Since we didn't have a binary predictor it made sense to use this classification.Random forests are a lot more robust than a simple decision tree as it aggregates many decision trees reducing overfitting. (Decision_Tree_Random_Forest.Rmd)
+-  To make our predictions we used the random forest classification studied in Statistical Learning. Since we didn't have a binary predictor it made sense to use this classification.Random forests are a lot more robust than a simple decision tree as it aggregates many decision trees reducing overfitting (Decision_Tree_Random_Forest.Rmd).
 
 - Random Forest Classification was used with 500 trees and the default mtry value which is the square root of the number of predictors (in this case it is the square-root of 6). Specifically, we use two prediction models - one with musical decade as the the main predictor and one with popularity. 
 
