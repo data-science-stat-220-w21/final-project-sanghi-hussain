@@ -30,9 +30,8 @@ pivoted_data_by_year <- data_by_year %>%
                                  "speechiness"),
                      names_to = "metric", 
                      values_to = "values")
-spotify_rforest_decade <- read_rds("./spotify_rforest_decade.rds")
 
-spotify_rforest_popularity <- read_rds("./spotify_rforest_popularity.rds")
+model_results <- read_rds("./results.rds")
 ```
 
 
@@ -162,25 +161,18 @@ shinyApp(
   ),
   server <- function(input, output) {
      observeEvent(input$go, {
-      input_data <- data.frame(acousticness = input$acousticness, 
-                               danceability = input$danceability,
-                               energy = input$energy, 
-                               instrumentalness = input$instrumentalness, 
-                               speechiness = input$speechiness, 
-                               valence = input$valence)
-      
-      input_data <- input_data %>%
-        mutate(prediction_decade = predict(spotify_rforest_decade, 
-                                           newdata=input_data, 
-                                           type = "response"),
-               prediction_popularity = predict(spotify_rforest_popularity, 
-                                               newdata=input_data, 
-                                               type = "response"))
+      output_data <- model_results %>%
+        filter(acousticness == input$acousticness, 
+               danceability == input$danceability, 
+               energy == input$energy, 
+               instrumentalness == input$instrumentalness,
+               valence == input$valence,
+               speechiness == input$speechiness)
       
       output$result <- renderUI(HTML(
         paste("<h3>Your musical tastes belong in the ",
-              input_data[1, 7] ,"s and would have a popularity between ", 
-              input_data[1, 8],"!</h3>", sep = "")))
+              output_data[["decade_results"]] ,"s and would have a popularity between ", 
+              output_data[["popularity_result"]],"!</h3>", sep = "")))
     })
   },
   options = list(height = 900)
