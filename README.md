@@ -27,7 +27,7 @@ Our analysis can be found in the following files:
 
 ### We used the following class tools/methods:
 
-- We used the tidydata methods to transform data_by_year into a longer format so that there is a column for the metric and the associated value. This helped us plot the metrics over time and differentiate between the different types (can be seen in app.Rmd)
+- We used the tidydata methods to transform data_by_year into a longer format so that there is a column for the metric and the associated value. This helped us plot the metrics over time and differentiate between them types (can be seen in app.Rmd)
 
 - Since we had so many years in the data set we decided to categorize them into decades. We created a  function and applied that to all the years in the data set (Data_wrangling.Rmd).
 
