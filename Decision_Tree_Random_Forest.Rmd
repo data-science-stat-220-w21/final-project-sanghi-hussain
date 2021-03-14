@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(stringr)
+library(tidyr)
 library(randomForest)
 library(rpart)
 library(caret)
@@ -35,6 +36,18 @@ spotify_test <- all_data_w_decades %>%
 ```
 
 ```{r}
+ranges <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+metric_range <- data.frame(acousticness = ranges, 
+                               danceability = ranges,
+                               energy = ranges, 
+                               instrumentalness = ranges, 
+                               speechiness = ranges, 
+                               valence = ranges)
+
+all_combos <- metric_range %>% expand(acousticness, danceability, energy, instrumentalness, speechiness, valence)
+```
+
+```{r}
 #fitting random forest using decade as the predictor
 set.seed(224222)
 spotify_rforest <- randomForest(
@@ -43,13 +56,10 @@ spotify_rforest <- randomForest(
   data = spotify_train)
 
 #making predictions
-as_tibble(predict(spotify_rforest, type="prob", newdata = spotify_test)) %>% 
-  bind_cols(spotify_test) %>%
-  mutate(prediction = predict(spotify_rforest, newdata=spotify_test)) %>%
-  select(decade, prediction) %>%
-  summarise(accuracy = mean(decade == prediction))
+decade_results <- all_combos %>%
+  mutate(decade_results = predict(spotify_rforest, newdata=all_combos)) 
 
-write_rds(spotify_rforest, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/spotify_rforest_decade.rds")
+#write_rds(decade_results, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/decade_results.rds")
 ```
 
 ```{r}
@@ -61,9 +71,10 @@ spotify_rforest_popularity <- randomForest(
   data = spotify_train)
 
 #making predictions
-as_tibble(predict(spotify_rforest_popularity, type="prob", newdata = spotify_test)) %>% 
-  bind_cols(spotify_test) %>%
-  mutate(prediction = predict(spotify_rforest_popularity, newdata=spotify_test)) %>%
+popularity_results <- predict(spotify_rforest_popularity, newdata=all_combos)
+all_results <- mutate(decade_results, popularity_result = popularity_results)
+
+write_rds(all_results, "/Users/ankitsanghi/Desktop/Ankit/Carleton/Classes/STAT 220/content/final-project-sanghi-hussain/results.rds")
 ```
 
 
